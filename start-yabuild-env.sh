@@ -93,9 +93,10 @@ RUN usermod -s /bin/bash ${USER_NAME} \
   && sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd \
   && ssh-keygen -A \
   && echo "export VISIBLE=now" >> /etc/profile \
-  && echo -e "${DOCKER_IMAGE_ENV}" > /etc/profile.d/50-hadoop-build.sh
+  && echo -e "${DOCKER_IMAGE_ENV}" > /etc/profile.d/50-hadoop-build.sh \
+  && apt-get install -y krb5-user awscli netcat iproute2
 ENV NOTVISIBLE "in users profile"
-EXPOSE 22
+EXPOSE 2222
 
 UserSpecificSshdDocker
 
@@ -109,11 +110,14 @@ DOCKER_INTERACTIVE_RUN=${DOCKER_INTERACTIVE_RUN-"-i -t"}
 # system.  And this also is a significant speedup in subsequent
 # builds because the dependencies are downloaded only once.
 docker run --rm=true $DOCKER_INTERACTIVE_RUN \
+  --network host \
   -v "${PWD}:${DOCKER_HOME_DIR}/hadoop${V_OPTS:-}" \
   -w "${DOCKER_HOME_DIR}/hadoop" \
   -v "${HOME}/.m2:${DOCKER_HOME_DIR}/.m2${V_OPTS:-}" \
   -v "${HOME}/.gnupg:${DOCKER_HOME_DIR}/.gnupg${V_OPTS:-}" \
   -v "${HOME}/.ssh:${DOCKER_HOME_DIR}/.ssh${V_OPTS:-}" \
+  -v "${HOME}/container-dot-cache:${DOCKER_HOME_DIR}/.cache${V_OPTS:-}" \
   -u "${USER_ID}" \
-  -p "2222:22" \
   "hadoop-build-${USER_ID}-sshd" "$@"
+#  -p "2222:2222" \
+#  -v "/tmp/.X11-unix:/tmp/.X11-unix" \
