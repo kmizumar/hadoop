@@ -323,7 +323,7 @@ public class SimpleCopyListing extends CopyListing {
    * directory that need to be copied or sync-ed is written as an entry to the
    * sequence file, with the possible exception of the source root:
    *     when either -update (sync) or -overwrite switch is specified, and if
-   *     the the source root is a directory, then the source root entry is not 
+   *     the source root is a directory, then the source root entry is not
    *     written to the sequence file, because only the contents of the source
    *     directory need to be copied in this case.
    * See {@link org.apache.hadoop.tools.util.DistCpUtils#getRelativePath} for
