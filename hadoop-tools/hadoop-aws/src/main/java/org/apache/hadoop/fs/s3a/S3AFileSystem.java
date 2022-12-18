@@ -2104,28 +2104,28 @@ public class S3AFileSystem extends FileSystem implements StreamCapabilities,
 
     } catch (FileNotFoundException e) {
       LOG.debug("rename: destination path {} not found", dst);
-      // Parent must exist
-      Path parent = dst.getParent();
-      if (!pathToKey(parent).isEmpty()
-          && !parent.equals(src.getParent())) {
-        try {
-          // make sure parent isn't a file.
-          // don't look for parent being a dir as there is a risk
-          // of a race between dest dir cleanup and rename in different
-          // threads.
-          S3AFileStatus dstParentStatus = innerGetFileStatus(parent,
-              false, StatusProbeEnum.FILE);
-          // if this doesn't raise an exception then
-          // the parent is a file or a dir.
-          if (!dstParentStatus.isDirectory()) {
-            throw new RenameFailedException(src, dst,
-                "destination parent is not a directory");
-          }
-        } catch (FileNotFoundException expected) {
-          // nothing was found. Don't worry about it;
-          // expect rename to implicitly create the parent dir
-        }
-      }
+//      // Parent must exist
+//      Path parent = dst.getParent();
+//      if (!pathToKey(parent).isEmpty()
+//          && !parent.equals(src.getParent())) {
+//        try {
+//          // make sure parent isn't a file.
+//          // don't look for parent being a dir as there is a risk
+//          // of a race between dest dir cleanup and rename in different
+//          // threads.
+//          S3AFileStatus dstParentStatus = innerGetFileStatus(parent,
+//              false, StatusProbeEnum.FILE);
+//          // if this doesn't raise an exception then
+//          // the parent is a file or a dir.
+//          if (!dstParentStatus.isDirectory()) {
+//            throw new RenameFailedException(src, dst,
+//                "destination parent is not a directory");
+//          }
+//        } catch (FileNotFoundException expected) {
+//          // nothing was found. Don't worry about it;
+//          // expect rename to implicitly create the parent dir
+//        }
+//      }
     }
     return Pair.of(srcStatus, dstStatus);
   }

@@ -280,7 +280,7 @@ public class RenameOperation extends ExecutingStoreOperation<Long> {
       }
       throw convertToIOException(ex);
     }
-    callbacks.finishRename(sourcePath, destCreated);
+//    callbacks.finishRename(sourcePath, destCreated);
     return bytesCopied.get();
   }
 

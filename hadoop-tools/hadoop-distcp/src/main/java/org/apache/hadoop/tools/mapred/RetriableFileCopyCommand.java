@@ -253,7 +253,7 @@ public class RetriableFileCopyCommand extends RetriableCommand {
   private void promoteTmpToTarget(Path tmpTarget, Path target, FileSystem fs)
                                   throws IOException {
     if ((fs.exists(target) && !fs.delete(target, false))
-        || (!fs.exists(target.getParent()) && !fs.mkdirs(target.getParent()))
+        || (!fs.getScheme().equals("s3a") && !fs.exists(target.getParent()) && !fs.mkdirs(target.getParent()))
         || !fs.rename(tmpTarget, target)) {
       throw new IOException("Failed to promote tmp-file:" + tmpTarget
                               + " to: " + target);
@@ -266,9 +266,11 @@ public class RetriableFileCopyCommand extends RetriableCommand {
 
     Path root = target.equals(targetWorkPath) ? targetWorkPath.getParent()
         : targetWorkPath;
-    Path tempFile = new Path(root, ".distcp.tmp." +
+    // in case of the root has no "/" character at the last position
+    String missing_delimiter = root.isAbsolute() ? "" : "/";
+    Path tempFile = new Path(root, missing_delimiter + ".distcp.tmp." +
         context.getTaskAttemptID().toString() +
-        "." + String.valueOf(System.currentTimeMillis()));
+        "." + System.currentTimeMillis());
     LOG.info("Creating temp file: {}", tempFile);
     return tempFile;
   }
