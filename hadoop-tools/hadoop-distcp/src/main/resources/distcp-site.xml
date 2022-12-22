@@ -1,0 +1,6 @@
+<configuration>
+    <property>
+        <name>distcp.copy.listing.class</name>
+        <value>org.apache.hadoop.tools.S3CopyListing</value>
+    </property>
+</configuration>

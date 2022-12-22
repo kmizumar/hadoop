@@ -183,19 +183,22 @@ public class CopyMapper extends Mapper<Text, CopyListingFileStatus, Text, Text> 
           LOG.debug("Path could not be found: " + target, ignore);
       }
 
-      if (targetStatus != null &&
-          (targetStatus.isDirectory() != sourceCurrStatus.isDirectory())) {
-        throw new IOException("Can't replace " + target + ". Target is " +
-            getFileType(targetStatus) + ", Source is " + getFileType(sourceCurrStatus));
-      }
+// QDH: 2022/12/22 by maru.
+//      if (targetStatus != null &&
+//          (targetStatus.isDirectory() != sourceCurrStatus.isDirectory())) {
+//        throw new IOException("Can't replace " + target + ". Target is " +
+//            getFileType(targetStatus) + ", Source is " + getFileType(sourceCurrStatus));
+//      }
 
       if (sourceCurrStatus.isDirectory()) {
         createTargetDirsWithRetry(description, target, context, sourceStatus);
         return;
       }
 
-      FileAction action = checkUpdate(sourceFS, sourceCurrStatus, target,
-          targetStatus);
+// QDH: 2022/12/22 by maru.
+//      FileAction action = checkUpdate(sourceFS, sourceCurrStatus, target,
+//          targetStatus);
+      FileAction action = FileAction.OVERWRITE;
 
       Path tmpTarget = target;
       if (action == FileAction.SKIP) {
